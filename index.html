@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>高新企业认定自评 — 宇守信咨询</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:#f0f2f5; color:#2d3436; padding-bottom:60px; }
+.header { background:linear-gradient(135deg,#1a0a2e,#3b1c6e); color:white; padding:32px 20px 24px; text-align:center; }
+.header h1 { font-size:22px; font-weight:700; margin-bottom:6px; }
+.header p { font-size:13px; opacity:0.85; }
+.header .badge { display:inline-block; background:rgba(255,255,255,0.2); border-radius:20px; padding:4px 14px; font-size:11px; margin-top:8px; }
+.tabs { display:flex; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.08); position:sticky; top:0; z-index:10; }
+.tab { flex:1; text-align:center; padding:14px 0; font-size:14px; font-weight:500; color:#888; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+.tab.active { color:#3b1c6e; border-bottom-color:#3b1c6e; }
+.panel { display:none; padding:16px; }
+.panel.active { display:block; }
+.card { background:white; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.06); margin-bottom:12px; }
+.card-title { background:#f0f4ff; padding:10px 16px; font-size:13px; font-weight:600; color:#3b1c6e; border-bottom:1px solid #e0e7ff; }
+.form-row { padding:10px 16px; border-bottom:1px solid #f5f5f5; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.form-row label { font-size:13px; color:#444; min-width:150px; flex-shrink:0; }
+.form-row input,.form-row select { padding:8px 12px; border:1px solid #e0e0e0; border-radius:8px; font-size:13px; flex:1; min-width:80px; max-width:200px; background:#fff8e1; line-height:44px; height:44px; }
+.form-row input:focus,.form-row select:focus { outline:none; border-color:#3b82f6; }
+.form-row .unit { font-size:12px; color:#888; }
+.yesno { display:flex; gap:8px; }
+.yesno span { padding:4px 16px; border-radius:16px; font-size:13px; cursor:pointer; border:1px solid #ddd; color:#666; }
+.yesno span.sel-yes { background:linear-gradient(135deg,#1a0a2e,#3b1c6e); color:white; border-color:#3b82f6; }
+.yesno span.sel-no { background:#e8ecf1; color:#999; border-color:#ddd; }
+.fixed-bottom { position:sticky; bottom:0; background:white; padding:12px 16px; display:flex; gap:10px; box-shadow:0 -2px 8px rgba(0,0,0,0.06); z-index:10; }
+.fixed-bottom button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:600; border:none; cursor:pointer; }
+.btn-primary { background:linear-gradient(135deg,#1a0a2e,#3b1c6e); color:white; }
+.btn-primary:hover { opacity:0.9; }
+.btn-secondary { background:#e8ecf1; color:#555; }
+
+.score-card { background:linear-gradient(135deg,#1a0a2e,#3b1c6e); color:white; border-radius:16px; padding:28px 20px; text-align:center; margin-bottom:16px; }
+.score-card .label { font-size:13px; opacity:0.85; }
+.score-card .score { font-size:40px; font-weight:800; margin:6px 0; }
+.score-card .grade { font-size:16px; font-weight:600; margin-bottom:4px; }
+.score-card .suggestion { font-size:13px; opacity:0.9; line-height:1.6; }
+.result-summary { background:linear-gradient(135deg,#1a0a2e,#3b1c6e); color:white; border-radius:16px; padding:28px 20px; text-align:center; margin-bottom:16px; }
+.result-summary .row { display:flex; justify-content:space-around; margin-top:12px; flex-wrap:wrap; gap:8px; }
+.result-summary .item { flex:1; min-width:100px; }
+.result-summary .item .label { font-size:11px; opacity:0.85; }
+.result-summary .item .val { font-size:22px; font-weight:800; margin:4px 0; }
+.result-summary .item .sub { font-size:12px; opacity:0.85; }
+
+.dim-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.dim-card { background:white; border-radius:12px; padding:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.dim-card .name { font-size:12px; color:#888; margin-bottom:4px; }
+.dim-card .dscore { font-size:20px; font-weight:700; }
+.dim-card .dstatus { font-size:11px; margin-top:4px; padding:2px 10px; border-radius:10px; display:inline-block; }
+.low { background:#e6f7e6; color:#16a34a; }
+.mid { background:#fef9e7; color:#d97706; }
+.high { background:#feeaea; color:#dc2626; }
+.pass { background:#e6f7e6; color:#16a34a; }
+.warn { background:#fef9e7; color:#d97706; }
+.danger { background:#feeaea; color:#dc2626; }
+.fail { background:#feeaea; color:#dc2626; }
+.caution { background:#fef9e7; color:#d97706; }
+.rate-green { background:#e6f7e6; color:#16a34a; }
+.rate-yellow { background:#fef9e7; color:#d97706; }
+.rate-red { background:#feeaea; color:#dc2626; }
+
+.help-card { background:white; border-radius:12px; padding:20px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.help-card h3 { font-size:15px; margin-bottom:8px; color:#3b1c6e; }
+.help-card p,.help-card li { font-size:13px; color:#555; line-height:1.8; }
+.check-list { list-style:none; padding:0; }
+.check-list li { padding:6px 0; font-size:13px; color:#444; border-bottom:1px solid #f5f5f5; display:flex; align-items:center; gap:8px; }
+.check-list li:last-child { border-bottom:none; }
+.detail-item { padding:12px 16px; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center; }
+.detail-item:last-child { border-bottom:none; }
+.detail-item .dlabel { font-size:13px; color:#555; }
+.detail-item .dval { font-size:14px; font-weight:600; }
+.detail-item .dval.pass { color:#16a34a; }
+.detail-item .dval.warn { color:#d97706; }
+.detail-item .dval.danger { color:#dc2626; }
+.result-card { background:white; border-radius:12px; padding:16px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.result-card h3 { font-size:14px; color:#3b1c6e; margin-bottom:8px; }
+.result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f5f5f5; font-size:13px; }
+.result-row:last-child { border-bottom:none; }
+.result-row .label { color:#555; }
+.result-row .val { font-weight:600; }
+.result-row.total { border-top:2px solid #3b1c6e; padding-top:8px; margin-top:4px; font-weight:700; }
+.result-row.total .val { color:#3b1c6e; font-size:16px; }
+.result-green { color:#16a34a; }
+.result-red { color:#dc2626; }
+.result-orange { color:#d97706; }
+
+.member-banner { background:linear-gradient(135deg,#0f0c29,#302b63,#24243e); border-radius:12px; padding:20px; text-align:center; margin-top:16px; }
+.member-banner h3 { font-size:15px; color:white; margin-bottom:6px; }
+.member-banner p { font-size:12px; color:rgba(255,255,255,0.85); line-height:1.6; }
+.member-banner .btn { display:inline-block; background:white; color:#3b1c6e; padding:8px 24px; border-radius:20px; text-decoration:none; font-size:13px; font-weight:600; margin-top:8px; }
+
+.contact { background:#eef2ff; border-radius:8px; padding:12px; }
+.contact strong { font-size:14px; color:#3b1c6e; }
+.scenario-grid { display:flex; gap:8px; }
+.scenario-btn { flex:1; padding:10px; border-radius:8px; font-size:13px; font-weight:600; border:2px solid #ddd; background:white; color:#888; cursor:pointer; text-align:center; transition:all .2s; }
+.scenario-btn.active { border-color:#3b82f6; color:#3b1c6e; background:#eef2ff; }
+.chart-area { background:white; border-radius:16px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-bottom:16px; text-align:center; }
+.chart-area canvas { max-width:100%; height:auto; }
+.form-row input[type=range] { flex:1; min-width:120px; max-width:250px; accent-color:#3b82f6; }
+.form-row .val { font-size:14px; font-weight:700; color:#3b1c6e; min-width:30px; text-align:right; }
+.form-row .hint { font-size:11px; color:#999; }
+.dim-card .bar-bg { position:absolute; bottom:0; left:0; height:4px; background:#e8ecf1; width:100%; }
+.dim-card .bar-fill { position:absolute; bottom:0; left:0; height:4px; transition:width .5s; }
+
+@media (max-width:480px){.dim-grid{grid-template-columns:1fr 1fr}.result-summary .row{flex-direction:column;gap:4px}}
+
+
+/* ===== 打印/PDF样式 ===== */
+@media print {
+  body { background:white !important; padding:0 !important; margin:0 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .fixed-bottom, .no-print, .marketing, [class*="返回"], footer, .footer, #返回, .return-bar, .bottom-bar { display:none !important; }
+  .header { background:linear-gradient(135deg,#0c1445,#1a3a6b) !important; color:white !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; padding:20px 16px !important; }
+  .card, .dim-card, .check-item, .result-card { break-inside:avoid; page-break-inside:avoid; border:1px solid #ddd !important; box-shadow:none !important; }
+  .score-card, .result-summary { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .tabs { display:none !important; }
+  .panel { display:block !important; padding:10px !important; }
+  .dim-grid { display:grid !important; grid-template-columns:1fr 1fr !important; gap:8px !important; }
+  .form-row { padding:6px 10px !important; }
+  a[href]:after { content:none !important; }
+}
+
+.pdf-btn { background:linear-gradient(135deg,#b8860b,#d4a843) !important; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📋 高新企业认定自评</h1>
+  <p>六大认定条件逐项打分 · 附认定建议</p>
+  <div class="badge">您身边的财税专家 · 洪淳宇</div>
+</div>
+<div class="tabs">
+  <div class="tab active" data-tab="input" onclick="st('input')">📝 填数据</div>
+  <div class="tab" data-tab="report" onclick="st('report')">📊 自评报告</div>
+  <div class="tab" data-tab="help" onclick="st('help')">❓ 说明</div>
+</div>
+
+<div class="panel active" id="p-input">
+  <div class="card">
+    <div class="card-title">🏢 企业基础信息</div>
+    <div class="form-row"><label>企业名称</label><input id="f_企业名称" placeholder="选填"></div>
+    <div class="form-row"><label>注册成立时间</label>
+      <select id="f_成立年限" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;">
+        <option value="1">不足1年</option><option value="2">1年以上</option><option value="3" selected>1年以上（需满1个会计年度）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 条件一：高新技术领域</div>
+    <div class="form-row">
+      <label>核心技术是否属于八大领域</label>
+      <select id="f_领域"><option value="0">是，明确属于</option><option value="1" selected>基本属于，但有争议</option><option value="2">不确定是否属于</option></select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 条件二：科技人员占比</div>
+    <div class="form-row"><label>科技人员数量</label><input id="f_科技人员" type="number" placeholder="0"><span class="unit">人</span></div>
+    <div class="form-row"><label>职工总数</label><input id="f_职工总数" type="number" placeholder="0"><span class="unit">人</span></div>
+    <div class="form-row" style="background:#fafafa;"><label style="color:#7c3aed;font-weight:600;">标准：≥10%</label><span id="科技人员提示" style="font-size:13px;color:#888;">填写数据后自动计算</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 条件三：研发费用占比</div>
+    <div class="form-row"><label>近一年销售收入</label>
+      <select id="f_收入规模"><option value="5000">5000万以下</option><option value="20000" selected>5000万~2亿</option><option value="20001">2亿以上</option></select>
+    </div>
+    <div class="form-row"><label>近三年研发费用总额</label><input id="f_研发费用" type="number" placeholder="0"><span class="unit">万元</span></div>
+    <div class="form-row"><label>近三年销售收入总额</label><input id="f_销售收入" type="number" placeholder="0"><span class="unit">万元</span></div>
+    <div class="form-row" style="background:#fafafa;">
+      <label style="color:#7c3aed;font-weight:600;">标准：<span id="研费标准">≥4%</span></label>
+      <span id="研费提示" style="font-size:13px;color:#888;">填写数据后自动计算</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📈 条件四：高新收入占比</div>
+    <div class="form-row"><label>高新收入总额</label><input id="f_高新收入" type="number" placeholder="0"><span class="unit">万元</span></div>
+    <div class="form-row"><label>总收入</label><input id="f_总收入" type="number" placeholder="0"><span class="unit">万元</span></div>
+    <div class="form-row" style="background:#fafafa;"><label style="color:#7c3aed;font-weight:600;">标准：≥60%</label><span id="高新收入提示" style="font-size:13px;color:#888;">填写数据后自动计算</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 条件五：知识产权</div>
+    <div class="form-row"><label>I类知识产权数量</label>
+      <select id="f_I类"><option value="0">0项</option><option value="1">1项</option><option value="2" selected>2项及以上</option></select>
+      <span class="unit" style="font-size:11px;color:#999;">发明专利/植物新品种/国家级农作物品种等</span>
+    </div>
+    <div class="form-row"><label>II类知识产权数量</label>
+      <select id="f_II类"><option value="0">0项</option><option value="1">1~3项</option><option value="2" selected>4项及以上</option></select>
+      <span class="unit" style="font-size:11px;color:#999;">实用新型/外观设计/软著/商标等</span>
+    </div>
+    <div class="form-row"><label>知识产权与核心技术关联性</label>
+      <select id="f_关联性"><option value="0">高度关联</option><option value="1" selected>部分关联</option><option value="2">关联性弱</option></select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ 条件六：无重大违规</div>
+    <div class="form-row"><label>近一年是否有重大安全事故</label>
+      <select id="f_事故"><option value="0">无</option><option value="1">有一般事故</option><option value="2">有重大事故</option></select>
+    </div>
+    <div class="form-row"><label>近一年是否有环境处罚</label>
+      <select id="f_环保"><option value="0">无</option><option value="1" selected>有一般整改</option><option value="2">有重大处罚</option></select>
+    </div>
+    <div class="form-row"><label>近一年是否有税务/质量违规</label>
+      <select id="f_违规"><option value="0">无</option><option value="1" selected>有轻微违规</option><option value="2">有严重违规</option></select>
+    </div>
+  </div>
+
+  <div class="fixed-bottom">
+    <button class="btn-secondary" onclick="resetAll()">清空</button>
+    <button class="btn-primary" onclick="calc()">📊 开始评估</button>
+  </div>
+</div>
+
+<div class="panel" id="p-report">
+  <div id="scoreCard" class="score-card">
+    <div class="label">高新认定评估结果</div>
+    <div class="score">—</div>
+    <div class="grade">请先在「填数据」页录入信息</div>
+    <div class="suggestion"></div>
+  </div>
+  <div id="dimGrid" class="dim-grid"></div>
+  <div class="card">
+    <div class="card-title">📋 六大条件逐项判定</div>
+    <div id="resultItems"></div>
+  </div>
+  <div class="fixed-bottom">
+    <button class="btn-secondary" onclick="st('input')">← 修改数据</button>
+    <button class="btn-primary" onclick="shareResult()">📤 分享</button>
+  </div>
+</div>
+
+<div class="panel" id="p-help">
+  <div class="help-card"><h3>📋 使用说明</h3>
+    <ol><li>填写企业基础数据和财务指标</li><li>选择各条件的符合情况</li><li>自动评估六大条件是否达标及认定建议</li></ol>
+  </div>
+  <div class="help-card"><h3>📋 六大认定条件</h3>
+    <ul>
+      <li><strong>领域</strong> — 核心技术属于国家重点支持的八大高新技术领域</li>
+      <li><strong>科技人员</strong> — 科技人员占比≥10%</li>
+      <li><strong>研发费用</strong> — 近三年占比：<5000万≥5%，5000万~2亿≥4%，>2亿≥3%</li>
+      <li><strong>高新收入</strong> — 高新收入占总收入≥60%</li>
+      <li><strong>知识产权</strong> — I类≥1项或II类≥5项+核心关联</li>
+      <li><strong>无违规</strong> — 近一年无重大安全/环保/税务/质量事故</li>
+    </ul>
+  </div>
+  <div class="help-card"><h3>👤 关于作者</h3>
+    <div class="contact">
+      <strong>洪淳宇 · 您身边的财税专家</strong>
+      <p>专注高新企业认定辅导、研发费用加计扣除、财税合规</p>
+      <p style="margin-top:6px;">📞 186-0129-4989 | 💬 hongchunyu042896</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function g(id) { const el=document.getElementById("f_"+id); return el ? parseFloat(el.value)||0 : 0; }
+function gs(id) { const el=document.getElementById("f_"+id); return el ? parseInt(el.value)||0 : 0; }
+
+// 实时计算
+document.querySelectorAll('#p-input input').forEach(el => {
+  el.addEventListener('input', updateLive);
+});
+document.querySelectorAll('#p-input select').forEach(el => {
+  el.addEventListener('change', updateLive);
+});
+
+function updateLive() {
+  // 科技人员
+  const 科技 = g("科技人员"), 职工 = g("职工总数");
+  const tip1 = document.getElementById("科技人员提示");
+  if (科技 > 0 && 职工 > 0) {
+    const r = 科技/职工*100;
+    tip1.innerHTML = `实际 ${r.toFixed(1)}% — ${r>=10 ? '✅ 达标' : '❌ 未达标'}`;
+    tip1.style.color = r>=10 ? "#16a34a" : "#dc2626";
+  } else { tip1.innerHTML = "填写数据后自动计算"; tip1.style.color="#888"; }
+
+  // 研发费用
+  const 收入规模 = parseInt(document.getElementById("f_收入规模").value);
+  const 研费 = g("研发费用"), 销售收入 = g("销售收入");
+  const tip2 = document.getElementById("研费提示"), std2 = document.getElementById("研费标准");
+  let std = 收入规模 <= 5000 ? 5 : 收入规模 <= 20000 ? 4 : 3;
+  std2.textContent = `≥${std}%`;
+  if (研费 > 0 && 销售收入 > 0) {
+    const r = 研费/销售收入*100;
+    tip2.innerHTML = `实际 ${r.toFixed(1)}% — ${r>=std ? '✅ 达标' : '❌ 未达标'}`;
+    tip2.style.color = r>=std ? "#16a34a" : "#dc2626";
+  } else { tip2.innerHTML = "填写数据后自动计算"; tip2.style.color="#888"; }
+
+  // 高新收入
+  const 高新 = g("高新收入"), 总收入 = g("总收入");
+  const tip3 = document.getElementById("高新收入提示");
+  if (高新 > 0 && 总收入 > 0) {
+    const r = 高新/总收入*100;
+    tip3.innerHTML = `实际 ${r.toFixed(1)}% — ${r>=60 ? '✅ 达标' : '❌ 未达标'}`;
+    tip3.style.color = r>=60 ? "#16a34a" : "#dc2626";
+  } else { tip3.innerHTML = "填写数据后自动计算"; tip3.style.color="#888"; }
+}
+
+function calc() {
+  const 领域 = gs("领域");
+  const 科技 = g("科技人员"), 职工 = g("职工总数");
+  const 收入规模 = parseInt(document.getElementById("f_收入规模").value);
+  const 研费 = g("研发费用"), 销售收入 = g("销售收入");
+  const 高新 = g("高新收入"), 总收入 = g("总收入");
+  const I类 = gs("I类"), II类 = gs("II类"), 关联性 = gs("关联性");
+  const 事故 = gs("事故"), 环保 = gs("环保"), 违规 = gs("违规");
+
+  const results = [];
+
+  // 条件一：领域
+  const 领域OK = 领域 === 0;
+  results.push({n:"高新技术领域",ok:领域OK,detail:领域OK?"明确属于八大领域":领域===1?"基本属于，有争议":"不确定是否属于",score:领域OK?10:领域===1?6:2});
+
+  // 条件二：科技人员
+  let 人员OK = false, 人员分 = 0;
+  if (科技 > 0 && 职工 > 0) {
+    人员OK = 科技/职工 >= 0.1;
+    人员分 = 人员OK ? 15 : Math.round(科技/职工*150);
+  }
+  results.push({n:"科技人员占比≥10%",ok:人员OK,detail:职工>0?`${科技}/${职工}=${(科技/职工*100).toFixed(1)}%`: "数据不足",score:Math.min(15,人员分)});
+
+  // 条件三：研发费用
+  let 研费OK = false, 研费分 = 0;
+  const std = 收入规模 <= 5000 ? 5 : 收入规模 <= 20000 ? 4 : 3;
+  if (研费 > 0 && 销售收入 > 0) {
+    研费OK = 研费/销售收入*100 >= std;
+    研费分 = 研费OK ? 30 : Math.round(研费/销售收入*100/std*30);
+  }
+  results.push({n:`研发费用占比≥${std}%`,ok:研费OK,detail:销售收入>0?`${研费}/${销售收入}=${(研费/销售收入*100).toFixed(1)}%`: "数据不足",score:Math.min(30,研费分)});
+
+  // 条件四：高新收入
+  let 高新OK = false, 高新分 = 0;
+  if (高新 > 0 && 总收入 > 0) {
+    高新OK = 高新/总收入 >= 0.6;
+    高新分 = 高新OK ? 20 : Math.round(高新/总收入*100/60*20);
+  }
+  results.push({n:"高新收入占比≥60%",ok:高新OK,detail:总收入>0?`${高新}/${总收入}=${(高新/总收入*100).toFixed(1)}%`: "数据不足",score:Math.min(20,高新分)});
+
+  // 条件五：知识产权
+  const 知产OK = I类 >= 1 || II类 >= 2;
+  let 知产分 = 0;
+  if (知产OK) {
+    知产分 = 关联性 === 0 ? 20 : 关联性 === 1 ? 14 : 8;
+  } else {
+    知产分 = I类*8 + II类*4;
+  }
+  results.push({n:"知识产权达标",ok:知产OK,detail:`I类${I类}项/II类${II类}项 关联性${['高','部分','弱'][关联性]}`,score:Math.min(20,知产分)});
+
+  // 条件六：无违规
+  const 违规OK = 事故===0 && 环保===0 && 违规===0;
+  const 违规分 = 违规OK ? 5 : Math.max(0, 5 - 事故*2 - 环保*1 - 违规*1);
+  results.push({n:"无重大违规",ok:违规OK,detail:`事故${['无','一般','重大'][事故]} 环保${['无','整改','处罚'][环保]} 税务${['无','轻微','严重'][违规]}`,score:Math.max(0,违规分)});
+
+  const totalScore = results.reduce((s,r) => s+r.score, 0);
+  const totalMax = 100;
+
+  let grade, suggestion;
+  if (totalScore >= 85) { grade = "✅ 认定条件基本满足"; suggestion = "🎉 企业在大多数条件上表现良好，建议准备申报材料"; }
+  else if (totalScore >= 65) { grade = "🟡 部分条件不达标"; suggestion = "📌 部分条件未完全达标，建议针对性整改后再申报"; }
+  else { grade = "❌ 条件差距较大"; suggestion = "⚠️ 多个条件不达标，建议进行全面规划后再考虑申报"; }
+
+  document.getElementById("scoreCard").innerHTML =
+    `<div class="label">高新认定评估得分</div><div class="score">${totalScore}/${totalMax}</div><div class="grade">${grade}</div><div class="suggestion">${suggestion}</div>`;
+
+  // 维度卡片
+  const dims = [
+    {n:"领域",s:results[0].score,m:10},{n:"科技人员",s:results[1].score,m:15},
+    {n:"研发费用",s:results[2].score,m:30},{n:"高新收入",s:results[3].score,m:20},
+    {n:"知识产权",s:results[4].score,m:20},{n:"无违规",s:results[5].score,m:5}
+  ];
+  document.getElementById("dimGrid").innerHTML = dims.map(d => {
+    const p = Math.round(d.s/d.m*100);
+    let c="#16a34a",cl="pass";
+    if(p<60){c="#dc2626";cl="fail"}else if(p<80){c="#d97706";cl="caution"}
+    return `<div class="dim-card"><div class="name">${d.n}</div><div class="dscore" style="color:${c}">${d.s}/${d.m}</div><div class="dstatus ${cl}">${d.s>=d.m?'达标':'待改进'}</div></div>`;
+  }).join("");
+
+  // 明细
+  const items = document.getElementById("resultItems");
+  items.innerHTML = results.map(r => {
+    const c = r.ok ? "#16a34a" : "#dc2626";
+    return `<div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;align-items:center;">
+      <div><strong>${r.n}</strong><br><span style="color:#888;font-size:12px;">${r.detail}</span></div>
+      <div style="text-align:right;"><div style="font-size:16px;font-weight:700;color:${c};">${r.score}分</div><div style="color:${c};font-size:12px;">${r.ok?'✅ 通过':'❌ 未达标'}</div></div>
+    </div>`;
+  }).join("");
+
+  st("report");
+}
+
+function st(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active",t.dataset.tab===name));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active",p.id==="p-"+name));
+  window.scrollTo(0,0);
+}
+function resetAll() {
+  if(!confirm("确定要清空所有数据吗？")) return;
+  document.querySelectorAll("#p-input select").forEach(el => el.selectedIndex=0);
+  document.querySelectorAll("#p-input input").forEach(el => el.value="");
+}
+function shareResult(){alert("📱 请截屏保存本页面，即可分享给客户！");}
+
+function downloadPDF(){
+  window.print();
+}
+</script>
+</body>
+</html>
